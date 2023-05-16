@@ -83,7 +83,7 @@ void menu()
 void inicializar()
 {
 
-	// provisório porque não libera a memoria usada pela arvore
+	// provisï¿½rio porque nï¿½o libera a memoria usada pela arvore
 	raiz = NULL;
 
 	cout << "Arvore inicializada \n";
@@ -150,24 +150,20 @@ NO* criaNO(int valor)
 
 NO* insereArvore(NO* no, int valor)
 {
-	if (no->valor > valor && no->esq == NULL) {
-		no->esq = criaNO(valor);
-		return no->esq;
+	if (no == NULL) // ponto de insercao
+	{
+		return criaNO(valor);
 	}
-	else if (no->valor < valor && no->dir == NULL) {
-		no->dir = criaNO(valor);
-		return no->dir;
+	else
+	{
+		if (valor < no->valor) {
+			no->esq = insereArvore(no->esq, valor);
+		}
+		else {
+			no->dir = insereArvore(no->dir, valor);
+		}
+		return no;
 	}
-	else if (no->valor > valor) {
-		return insereArvore(no->esq, valor);
-	}
-	else if (no->valor < valor) {
-		return insereArvore(no->dir, valor);
-	}
-	else {
-		return NULL;
-	}
-
 
 }
 
@@ -245,14 +241,33 @@ void removerElementoArvore(NO* no, int valor) {
 		cout << "Elemento nao encontrado \n";
 		return;
 	}
+	if (pai == NULL) { 
+        free(atual);
+        raiz = NULL;
+        return;
 
-
-	// caso 1: sem filhos	
+	if (atual->esq == NULL && atual->dir == NULL) { // sem filhos
+        if (pai->esq == atual) {
+            pai->esq = NULL;
+        }
+        else {
+            pai->dir = NULL;
+        }
+        free(atual);
+        return;
+    }
+    if (atual->esq == NULL || atual->dir == NULL) { // um filho
+        NO* filho = atual->esq != NULL ? atual->esq : atual->dir;
+        if (pai->esq == atual) {
+            pai->esq = filho;
+        }
+        else {
+            pai->dir = filho;
+        }
+        free(atual);
+        return;
+    }
 	
-
-	// caso 2: um filho	
-	
-
 	// caso 3: dois filhos
 
 	// procura o elmento mais a esquerda da sub-arvore da direita
@@ -281,7 +296,6 @@ void removerElementoArvore(NO* no, int valor) {
 
 
 }
-
 
 
 
